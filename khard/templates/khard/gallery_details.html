@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<a href="{% url 'gallery_detail' item.pk %}" class="text-decoration-none text-dark">
+    <div class="card h-100 shadow">
+      {% if item.image %}
+        <img src="{{ item.image.url }}" class="card-img-top" alt="{{ item.title }}">
+      {% elif item.video %}
+        <video class="w-100" controls>
+          <source src="{{ item.video.url }}">
+          Your browser does not support the video tag.
+        </video>
+      {% endif %}
+      <div class="card-body">
+        <h5 class="card-title">{{ item.title }}</h5>
+        <p class="card-text">{{ item.description|truncatewords:20 }}</p>
+      </div>
+    </div>
+  </a>
+{% endblock content %}

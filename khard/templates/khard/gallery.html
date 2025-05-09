@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="mb-4 text-white text-center">Gallery</h2>
+
+<div class="row">
+  {% for item in gallery_items %}
+    <div class="col-md-4 mb-4">
+      <div class="card h-100 shadow-sm gallery-card position-relative">
+        <a href="{% url 'gallery_detail' item.pk %}" class="stretched-link"></a>
+
+        {% if item.image %}
+          <img src="{{ item.image.url }}" class="card-img-top gallery-img-small" alt="{{ item.title }}">
+        {% elif item.video %}
+          <video class="w-100 gallery-img-small" controls>
+            <source src="{{ item.video.url }}" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        {% endif %}
+
+        <div class="card-body py-3 px-3">
+          <h6 class="card-title mb-1">{{ item.title }}</h6>
+          <p class="card-text small mb-2">{{ item.description|truncatewords:15 }}</p>
+          <small class="text-muted">Posted on {{ item.created_at|date:"M d, Y" }}</small>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+{% if not gallery_items %}
+  <p class="text-white text-center">No gallery items to display yet.</p>
+{% endif %}
+{% endblock %}

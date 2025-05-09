@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="fade-in">
+    <h2>Welcome to Khard Training Institute</h2>
+    <p>Empowering your future through professional courses and programs.</p>
+  </div>
+  
+<div id="homeCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="5000">
+<div id="homeCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <div class="bg-cover d-flex align-items-center justify-content-center text-white"
+           style="background-image: url('/static/images/b.jpg'); height: 100vh;">
+        <h1 class="display-4">Welcome to Khard Training Institute</h1>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <div class="bg-cover d-flex align-items-center justify-content-center text-white"
+           style="background-image: url('/static/images/a.jpg'); height: 100vh;">
+        <h1 class="display-4">Empowering Through Knowledge</h1>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <div class="bg-cover d-flex align-items-center justify-content-center text-white"
+           style="background-image: url('/static/images/b.jpg'); height: 100vh;">
+        <h1 class="display-4">Your Future Starts Here</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="mt-5">
+  <h3 class="text-white mb-4">Featured Gallery</h3>
+  <div class="row">
+    {% for item in gallery_items %}
+      <div class="col-md-4 mb-4">
+        <div class="card shadow-sm">
+          {% if item.image %}
+            <img src="{{ item.image.url }}" class="card-img-top" alt="{{ item.title }}">
+          {% elif item.video %}
+            <video controls class="w-100">
+              <source src="{{ item.video.url }}" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          {% endif %}
+          <div class="card-body">
+            <h5 class="card-title">{{ item.title }}</h5>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

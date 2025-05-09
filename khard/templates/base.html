@@ -1,0 +1,206 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Khard Training Institute</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap & Google Fonts -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      background: linear-gradient(135deg, #d697e2, #ba80c9);
+      background-attachment: fixed;
+      background-size: cover;
+      background-repeat: no-repeat;
+      font-family: 'Roboto', sans-serif;
+      color: #fff;
+    }
+
+    a, a:hover {
+      color: #f8f9fa;
+    }
+
+    .nav-link {
+      transition: color 0.3s ease-in-out;
+    }
+
+    .nav-link:hover {
+      color: #ffc107;
+      text-decoration: underline;
+    }
+
+    header h1 {
+      font-weight: 700;
+    }
+
+    .card {
+      transition: transform 0.3s ease-in-out, box-shadow 0.3s;
+    }
+
+    .card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+    }
+
+    .card-body h5 {
+      font-weight: 600;
+      color: #333;
+    }
+
+    footer {
+      background: rgba(0, 0, 0, 0.7);
+      padding: 40px 0;
+      text-align: center;
+    }
+
+    footer a {
+      color: #ffc107;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Gallery */
+    .gallery-img {
+      object-fit: cover;
+      height: 200px;
+      border-radius: 8px;
+    }
+
+    .gallery-img-small {
+  height: 200px;
+  object-fit: cover;
+  border-bottom: 1px solid #ddd;
+}
+
+.gallery-card {
+  transition: transform 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+}
+.gallery-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+
+    /* Modal Viewer */
+    .modal-img {
+      width: 100%;
+      max-height: 80vh;
+    }
+  </style>
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+
+  <!-- Header -->
+  <header class="text-center py-4">
+    <h1 class="display-5">Khard Training Institute</h1>
+    <nav class="nav justify-content-center">
+      <a href="/" class="nav-link fw-semibold">Home</a>
+      <a href="/courses/" class="nav-link fw-semibold">Courses</a>
+      <a href="/events/" class="nav-link fw-semibold">Events</a>
+      <a href="/gallery/" class="nav-link fw-semibold">Gallery</a>
+      <a href="/contact/" class="nav-link fw-semibold">Contact</a>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container flex-grow-1 py-4">
+    {% block content %}{% endblock %}
+
+    <!-- Search Form -->
+    <form method="get" action="{% url 'search' %}" class="my-5">
+      <div class="input-group shadow">
+        <input type="text" name="q" class="form-control form-control-lg" placeholder="Search for courses, events, or gallery..." required>
+        <button class="btn btn-warning btn-lg" type="submit">Search</button>
+      </div>
+    </form>
+
+    <!-- Featured Gallery -->
+    {% if gallery_items %}
+    <section class="my-5">
+      <h3 class="text-white mb-4">Featured Gallery</h3>
+      <div class="row">
+        {% for item in gallery_items %}
+        <div class="col-md-4 mb-4">
+          <div class="card shadow">
+            {% if item.image %}
+              <img src="{{ item.image.url }}" alt="{{ item.title }}" class="card-img-top gallery-img" data-bs-toggle="modal" data-bs-target="#imageModal" data-img="{{ item.image.url }}">
+            {% elif item.video %}
+              <video controls class="w-100 gallery-img">
+                <source src="{{ item.video.url }}" type="video/mp4">
+                Your browser does not support video.
+              </video>
+            {% endif %}
+            <div class="card-body">
+              <h5 class="card-title">{{ item.title }}</h5>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+  </main>
+
+  <!-- Footer -->
+  <footer class="mt-auto text-white">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 text-start">
+          <h5>About Us</h5>
+          {% if about %}
+            <p>{{ about.content|linebreaks }}</p>
+          {% else %}
+            <p>About information will be updated soon.</p>
+          {% endif %}
+        </div>
+        <div class="col-md-6 text-end">
+          <h5>Contact</h5>
+          <p>Email: <a href="mailto:info@khardinstitute.com">info@khardinstitute.com</a></p>
+          <p>WhatsApp: <a href="https://wa.me/233XXXXXXXXX" target="_blank">Chat with us</a></p>
+          <p>Facebook: <a href="https://facebook.com/khardinstitute" target="_blank">/khardinstitute</a></p>
+          <p>Instagram: <a href="https://instagram.com/khardinstitute" target="_blank">@khardinstitute</a></p>
+        </div>
+      </div>
+      <div class="text-center mt-3">
+        <small>&copy; {{ now|date:"Y" }} Khard Training Institute. All rights reserved.</small>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Modal for Image Viewer -->
+  <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content bg-dark">
+        <div class="modal-body text-center">
+          <img src="" class="modal-img" alt="Gallery Preview">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Modal Image Viewer
+    const modal = document.getElementById('imageModal');
+    const modalImg = modal.querySelector('.modal-img');
+
+    document.querySelectorAll('[data-bs-target="#imageModal"]').forEach(img => {
+      img.addEventListener('click', () => {
+        modalImg.src = img.getAttribute('data-img');
+      });
+    });
+  </script>
+</body>
+</html>
