@@ -27,7 +27,13 @@ def gallery(request):
 
 def gallery_detail(request, pk):
     item = get_object_or_404(GalleryItem, pk=pk)
-    return render(request, 'khard/gallery_details.html', {'item': item})
+    previous_item = GalleryItem.objects.filter(pk__lt=item.pk).order_by('-pk').first()
+    next_item = GalleryItem.objects.filter(pk__gt=item.pk).order_by('pk').first()
+    return render(request, 'khard/gallery_details.html', {
+        'item': item,
+        'previous_item': previous_item,
+        'next_item': next_item
+    })
 
 
 def contact(request):

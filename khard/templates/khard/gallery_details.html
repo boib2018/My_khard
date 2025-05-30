@@ -1,20 +1,78 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<a href="{% url 'gallery_detail' item.pk %}" class="text-decoration-none text-dark">
-    <div class="card h-100 shadow">
-      {% if item.image %}
-        <img src="{{ item.image.url }}" class="card-img-top" alt="{{ item.title }}">
-      {% elif item.video %}
-        <video class="w-100" controls>
-          <source src="{{ item.video.url }}">
-          Your browser does not support the video tag.
-        </video>
+<div class="container mx-auto px-4 py-10">
+  <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
+
+    <!-- Display Image or Video -->
+    {% if item.image %}
+      <img src="{{ item.image.url }}"
+           alt="{{ item.title }}"
+           class="w-full h-96 object-cover cursor-pointer"
+           onclick="openModal('{{ item.image.url }}')">
+    {% elif item.video %}
+      <video controls class="w-full h-96 object-cover">
+        <source src="{{ item.video.url }}" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    {% endif %}
+
+    <!-- Title and Description -->
+    <div class="p-6">
+      <h2 class="text-3xl font-bold text-gray-800 mb-4">{{ item.title }}</h2>
+      <p class="text-gray-700 leading-relaxed mb-6">{{ item.description }}</p>
+
+      <!-- Like + Share Buttons (placeholders) -->
+      <div class="flex items-center space-x-4 mb-6">
+        <button class="flex items-center space-x-2 bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">
+          ❤️ <span>Like</span>
+        </button>
+        <button class="flex items-center space-x-2 bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">
+          🔗 <span>Share</span>
+        </button>
+      </div>
+
+      <!-- Edit Form (for staff) -->
+      {% if user.is_staff %}
+      <form method="post" class="mt-8 space-y-4">
+        {% csrf_token %}
+        <label class="block text-sm font-medium text-gray-700">Edit Description:</label>
+        <textarea name="description" rows="4"
+                  class="w-full px-3 py-2 border border-gray-300 rounded">{{ item.description }}</textarea>
+        <button type="submit"
+                class="bg-primary text-white px-4 py-2 rounded hover:bg-secondary">Update</button>
+      </form>
       {% endif %}
-      <div class="card-body">
-        <h5 class="card-title">{{ item.title }}</h5>
-        <p class="card-text">{{ item.description|truncatewords:20 }}</p>
+
+      <!-- Back Button -->
+      <div class="mt-10">
+        <a href="{% url 'gallery' %}"
+           class="inline-block bg-purple-600 text-white px-5 py-2 rounded hover:bg-purple-700 transition">
+          ← Back to Gallery
+        </a>
       </div>
     </div>
-  </a>
-{% endblock content %}
+  </div>
+</div>
+
+<!-- Image Modal -->
+<div id="imageModal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-80 flex justify-center items-center">
+  <button onclick="closeModal()"
+          class="absolute top-6 right-6 text-white bg-gray-800 bg-opacity-60 hover:bg-opacity-90 p-2 rounded-full text-xl">
+    ✕
+  </button>
+  <img id="modalImage" src="" class="max-h-[90vh] max-w-full rounded shadow-xl">
+</div>
+
+<script>
+  function openModal(imgUrl) {
+    document.getElementById("modalImage").src = imgUrl;
+    document.getElementById("imageModal").classList.remove("hidden");
+  }
+
+  function closeModal() {
+    document.getElementById("imageModal").classList.add("hidden");
+    document.getElementById("modalImage").src = "";
+  }
+</script>
+{% endblock %}

@@ -1,20 +1,39 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Contact Us</h2>
+<div class="max-w-lg mx-auto bg-white bg-opacity-20 backdrop-blur-md rounded-lg shadow-lg p-8 mt-10">
+  <h2 class="text-3xl font-bold mb-6 text-black text-center">Contact Us</h2>
 
-{% if messages %}
-  {% for message in messages %}
-    <div class="alert alert-success">{{ message }}</div>
-  {% endfor %}
-{% endif %}
+  {% if messages %}
+    <div class="mb-4">
+      {% for message in messages %}
+        <div class="bg-green-500 text-white px-4 py-3 rounded mb-2 shadow">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
 
-<form method="post" novalidate>
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit" class="btn btn-primary">Send Message</button>
-</form>
+  <form method="post" novalidate class="space-y-6">
+    {% csrf_token %}
+
+    {% for field in form %}
+      <div>
+        <label for="{{ field.id_for_label }}" class="block text-black font-semibold mb-1">{{ field.label }}</label>
+        {{ field }}
+        {% if field.help_text %}
+          <p class="text-xs text-gray-200 mt-1">{{ field.help_text }}</p>
+        {% endif %}
+        {% for error in field.errors %}
+          <p class="text-red-400 text-sm mt-1">{{ error }}</p>
+        {% endfor %}
+      </div>
+    {% endfor %}
+
+    <button type="submit" 
+            class="w-full bg-accent text-gray-900 font-bold py-3 rounded hover:bg-yellow-400 transition">
+      Send Message
+    </button>
+  </form>
+</div>
 {% endblock %}
-
-
- 
